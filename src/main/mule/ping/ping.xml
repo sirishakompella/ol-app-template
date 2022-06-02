@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<flow name="pingFlow" doc:id="1ea7ed09-4351-44d4-bf38-cb99d7503c1a" >
+		<json-logger:logger doc:name="Logger" doc:id="8e8ea47e-8843-4214-a828-e3214f80ff8b" config-ref="JSON_Logger_Config" message="Inside Ping flow">
+			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+{
+	message: "Ping flow Triggered",
+	attributes: JSONLoggerModule::stringifyNonJSON(attributes),
+    payload: JSONLoggerModule::stringifyNonJSON(payload)
+}]]]></json-logger:content>
+		</json-logger:logger>
+		<choice doc:name="Choice" doc:id="dbe05235-eca5-4e83-9bc3-e44e443344b7" >
+			<when expression='#[attributes.queryParams.mode == "verbose"]'>
+				<json-logger:logger doc:name="Logger" doc:id="4e932af2-699d-4cdf-b3d0-d0ca5bc906be" config-ref="JSON_Logger_Config" message="Inside Verbose" tracePoint="BEFORE_TRANSFORM">
+					<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+{
+	message: "Inside the verbose flow",
+    payload: JSONLoggerModule::stringifyNonJSON(payload) 
+}]]]></json-logger:content>
+				</json-logger:logger>
+				<ee:transform doc:name="Transform Message" doc:id="c3ac97c3-af5b-4f82-b0dd-52738b3ad379" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	appName: app.name,
+	appVersion: p('app.version'),
+	appStatus: "Running",
+	timestamp: now() as String{format: "yyyy-MM-dd'T'HH:mm:ss.SSSz"},
+	muleVersion: mule.version,
+	serverProperties: server.host
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Ping Response" doc:id="0fb7d1f4-6134-4d3d-a2ed-aa6969113c12">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  appName: app.name,
+  appVersion: p('app.version'),
+  appStatus: "Running",
+  timestamp: now() as String{format: "yyyy-MM-dd'T'HH:mm:ss.SSSZ"}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</otherwise>
+		</choice>
+		<json-logger:logger doc:name="Logger" doc:id="d6e97875-c04a-4b4b-8174-b3bfd3e27a1e" config-ref="JSON_Logger_Config" message="Ping Flow Completed" tracePoint="END">
+			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+{
+	message: "Ping Flow Completed",
+	attributes: JSONLoggerModule::stringifyNonJSON(attributes),
+    payload: JSONLoggerModule::stringifyNonJSON(payload) 
+}]]]></json-logger:content>
+		</json-logger:logger>
+	</flow>
+</mule>

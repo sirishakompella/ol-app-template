@@ -1,0 +1,23 @@
+#%RAML 1.0
+title: ol-app-template
+version: v1
+baseUri: /api/v1
+
+/ping:
+  get:
+    queryParameters:
+      mode:
+        type: string
+        example: "verbose"
+        required: false
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "appName": "ol-app-template",
+                "appVersion": "1.0.0",
+                "appStatus": "Running",
+                "timestamp": "2021-10-28T09:12:56.000Z"
+              }

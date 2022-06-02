@@ -1,0 +1,17 @@
+http:
+  host: "0.0.0.0"
+  port: "8080"
+  basePath: "/api/v1"
+
+app:
+  version: "1.0.0"
+
+api:
+  name: "ol-app-template"
+  version: "1.0.0"
+
+json:
+  logger:
+    application:
+      name: "ol-app-template"
+      version: "1.0.0"

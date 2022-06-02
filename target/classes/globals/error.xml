@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:error-handler-plugin="http://www.mulesoft.org/schema/mule/error-handler-plugin" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/error-handler-plugin http://www.mulesoft.org/schema/mule/error-handler-plugin/current/mule-error-handler-plugin.xsd">
+	<error-handler name="errorError_Handler" doc:id="3eedaac6-484d-4c3c-8ede-b90e4f735a2f" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="bb5d5b8b-fdbe-487f-9002-9aeadaa76b7d" >
+			<error-handler-plugin:on-error doc:name="Process Error" doc:id="3e4d8851-f2c1-4044-b55b-2e914e21119d" config-ref="Error_Handler_Plugin_Config"/>
+			<set-variable value="#[attributes.httpStatus]" doc:name="httpStatus" doc:id="fec1afa5-28c6-4c01-8696-fa4022393a08" variableName="httpStatus"/>
+		</on-error-propagate>
+	</error-handler>
+</mule>
